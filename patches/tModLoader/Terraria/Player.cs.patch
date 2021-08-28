@@ -3521,7 +3521,7 @@
  			Main.instance.LoadItem(type);
  			if (type == 75)
  				return TextureAssets.Item[type].Frame(1, 8);
-@@ -29758,6 +_,13 @@
+@@ -29758,6 +_,29 @@
  		}
  
  		public void ItemCheck(int i) {
@@ -3530,12 +3530,28 @@
 +
 +			PlayerLoader.PostItemCheck(this);
 +		}
++
++		public enum E__ItemCheckMode {
++			SAD_PATCH = 0,
++			VANILLA_WAY = 1,
++			NOCOMMENT_VANILLA_WAY = 2,
++			TML_NOW = 3,
++			REVERSE_SAD_PATCH = 4
++		};
++		public static E__ItemCheckMode __ItemCheckMode = E__ItemCheckMode.SAD_PATCH;
++
 +		private bool willUseItemNextFrame = false;
 +		private void ItemCheck_Inner(int i) {
++			var X__ItemCheckMode = __ItemCheckMode;
++			// Please compiler leave me alone
++			Item item2 = new Item();
++			Rectangle drawHitbox = new Rectangle();
++			int weaponDamage = 0;
++
  			if (CCed) {
  				channel = false;
  				itemAnimation = (itemAnimationMax = 0);
-@@ -29770,6 +_,42 @@
+@@ -29770,8 +_,51 @@
  			if (Main.myPlayer == i && PlayerInput.ShouldFastUseItem)
  				controlUseItem = true;
  
@@ -3568,16 +3584,26 @@
 +			// This is done so that itemTime and itemAnimation cannot be decremented in the same tick as the one they're set in, which should fix a lot of use time issues
 +			// -- ThomasThePencil
 +
-+			if (willUseItemNextFrame)
-+				ItemCheck_StartActualUse(item);
++			if (X__ItemCheckMode == E__ItemCheckMode.SAD_PATCH) {
++				if (willUseItemNextFrame)
++					ItemCheck_StartActualUse(item);
++			}
 +
-+			goto DecrementItemAnimation;
++			if (X__ItemCheckMode == E__ItemCheckMode.SAD_PATCH)
++				goto DecrementItemAnimation;
++			if (X__ItemCheckMode == E__ItemCheckMode.TML_NOW)
++				goto DecrementItemAnimation;
++			if (X__ItemCheckMode == E__ItemCheckMode.REVERSE_SAD_PATCH)
++				goto ItemCheckPart1;
 +
 +			ItemCheckPart1:
 +
  			ItemCheck_HandleMount();
- 			int weaponDamage = GetWeaponDamage(item);
+-			int weaponDamage = GetWeaponDamage(item);
++			/* int */ weaponDamage = GetWeaponDamage(item);
  			ItemCheck_HandleMPItemAnimation(item);
+ 			ItemCheck_HackHoldStyles(item);
+ 			if (itemAnimation < 0)
 @@ -29783,8 +_,17 @@
  			if (itemAnimation == 0 && reuseDelay > 0)
  				ApplyReuseDelay();
@@ -3606,7 +3632,7 @@
  			if (flag2 && controlUseItem && releaseUseItem && itemAnimation == 0 && item.useStyle != 0) {
  				if (altFunctionUse == 1)
  					altFunctionUse = 2;
-@@ -29813,16 +_,19 @@
+@@ -29813,18 +_,30 @@
  				if (whoAmI == Main.myPlayer && gravDir == 1f && item.mountType != -1 && mount.CanMount(item.mountType, this))
  					mount.SetMount(item.mountType, this);
  
@@ -3614,30 +3640,53 @@
 +				if ((item.shoot <= 0 || !ProjectileID.Sets.MinionTargettingFeature[item.shoot] || altFunctionUse != 2) && flag3 && whoAmI == Main.myPlayer && item.shoot >= 0 && (ProjectileID.Sets.LightPet[item.shoot] || Main.projPet[item.shoot]))
  					FreeUpPetsAndMinions(item);
  
--				if (flag3)
--					ItemCheck_StartActualUse(item);
 +				willUseItemNextFrame = flag3;
++				if (X__ItemCheckMode != E__ItemCheckMode.SAD_PATCH) {
+-				if (flag3)
++					if (willUseItemNextFrame)
+-					ItemCheck_StartActualUse(item);
++						ItemCheck_StartActualUse(item);
++				}
  			}
  
  			if (!controlUseItem)
  				channel = false;
  
-+			goto HandleItemHolding;
++			if (X__ItemCheckMode == E__ItemCheckMode.SAD_PATCH)
++				goto HandleItemHolding;
++			if (X__ItemCheckMode == E__ItemCheckMode.TML_NOW)
++				goto ItemCheckPart2;
++			if (X__ItemCheckMode == E__ItemCheckMode.REVERSE_SAD_PATCH)
++				goto HandleItemHolding;
 +
 +			DecrementItemAnimation:
 +
- 			Item item2 = (itemAnimation > 0) ? lastVisualizedSelectedItem : item;
- 			Rectangle drawHitbox = Item.GetDrawHitbox(item2.type, this);
+-			Item item2 = (itemAnimation > 0) ? lastVisualizedSelectedItem : item;
++			/* Item */ item2 = (itemAnimation > 0) ? lastVisualizedSelectedItem : item;
+-			Rectangle drawHitbox = Item.GetDrawHitbox(item2.type, this);
++			/* Rectangle */ drawHitbox = Item.GetDrawHitbox(item2.type, this);
  			compositeFrontArm.enabled = false;
-@@ -29843,12 +_,23 @@
+ 			compositeBackArm.enabled = false;
+ 			if (itemAnimation > 0) {
+@@ -29843,12 +_,39 @@
  				itemAnimation--;
  			}
  
-+			goto DecrementItemTime;
++			if (X__ItemCheckMode == E__ItemCheckMode.SAD_PATCH)
++				goto DecrementItemTime;
++			if (X__ItemCheckMode == E__ItemCheckMode.TML_NOW)
++				goto DecrementItemTime;
++			if (X__ItemCheckMode == E__ItemCheckMode.REVERSE_SAD_PATCH)
++				goto DecrementItemTime;
 +
 +			HandleItemHolding:
 +
 +			ItemLoader.HoldItem(item, this);
++
++			if (X__ItemCheckMode == E__ItemCheckMode.REVERSE_SAD_PATCH) {
++				item2 = (itemAnimation > 0) ? lastVisualizedSelectedItem : item;
++				drawHitbox = Item.GetDrawHitbox(item2.type, this);
++			}
 +
  			if (itemAnimation > 0)
  				ItemCheck_ApplyUseStyle(heightOffsetHitboxCenter, item2, drawHitbox);
@@ -3645,8 +3694,14 @@
  				ItemCheck_ApplyHoldStyle(heightOffsetHitboxCenter, item2, drawHitbox);
  
 -			releaseUseItem = !controlUseItem;
-+			//releaseUseItem = !controlUseItem;
-+			goto ItemCheckPart2;
++			if (X__ItemCheckMode == E__ItemCheckMode.NOCOMMENT_VANILLA_WAY)
++				releaseUseItem = !controlUseItem; ///???
++			if (X__ItemCheckMode == E__ItemCheckMode.SAD_PATCH)
++				goto ItemCheckPart2;
++			if (X__ItemCheckMode == E__ItemCheckMode.TML_NOW)
++				return; // This is the end of our spaghetti trip!
++			if (X__ItemCheckMode == E__ItemCheckMode.REVERSE_SAD_PATCH)
++				goto ItemCheckPart2;
 +
 +			// See the comment at DecrementItemAnimation for explanation
 +			DecrementItemTime:
@@ -3654,11 +3709,16 @@
  			if (itemTime > 0) {
  				itemTime--;
  				if (ItemTimeIsZero && whoAmI == Main.myPlayer) {
-@@ -29862,11 +_,19 @@
+@@ -29862,11 +_,24 @@
  				}
  			}
  
-+			goto ItemCheckPart1;
++			if (X__ItemCheckMode == E__ItemCheckMode.SAD_PATCH)
++				goto ItemCheckPart1;
++			if (X__ItemCheckMode == E__ItemCheckMode.TML_NOW)
++				goto ItemCheckPart1;
++			if (X__ItemCheckMode == E__ItemCheckMode.REVERSE_SAD_PATCH)
++				return;
 +
 +			ItemCheckPart2:
 +
@@ -3816,11 +3876,15 @@
  							if (item.stack > 0)
  								item.stack--;
  
-@@ -30342,6 +_,8 @@
+@@ -30342,6 +_,12 @@
  
  			if (itemAnimation == 0)
  				JustDroppedAnItem = false;
 +
++			if (X__ItemCheckMode == E__ItemCheckMode.TML_NOW)
++				goto HandleItemHolding;
++			if (X__ItemCheckMode == E__ItemCheckMode.REVERSE_SAD_PATCH)
++				goto DecrementItemAnimation;
 +			return; // End of spaghetti
  		}
  
