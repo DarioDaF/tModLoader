@@ -349,6 +349,7 @@ namespace Terraria.ModLoader
 		internal static Mod LoadingMod { get; private set; }
 		private static void LoadModContent(CancellationToken token, Action<Mod> loadAction) {
 			MemoryTracking.Checkpoint();
+			Monitor.Enter(MonoModHooks.HookProtector);
 			int num = 0;
 			foreach (var mod in ModLoader.Mods) {
 				token.ThrowIfCancellationRequested();
@@ -366,6 +367,7 @@ namespace Terraria.ModLoader
 					MemoryTracking.Update(mod.Name);
 				}
 			}
+			Monitor.Exit(MonoModHooks.HookProtector);
 		}
 
 		private static void SetupBestiary(CancellationToken token) {
@@ -421,8 +423,10 @@ namespace Terraria.ModLoader
 				MonoModHooks.RemoveAll(mod);
 				
 				try {
+					Monitor.Enter(MonoModHooks.HookProtector);
 					mod.Close();
 					mod.UnloadContent();
+					Monitor.Exit(MonoModHooks.HookProtector);
 				}
 				catch (Exception e) {
 					e.Data["mod"] = mod.Name;

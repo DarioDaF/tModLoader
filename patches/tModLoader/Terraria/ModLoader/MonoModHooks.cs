@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Threading;
 using Terraria.ModLoader.Core;
 using Terraria.ModLoader.Default;
 
@@ -14,6 +15,8 @@ namespace Terraria.ModLoader
 {
 	public static class MonoModHooks
 	{
+		public static object HookProtector = new object();
+
 		private static Dictionary<Type, string> defaultAliases = new Dictionary<Type, string> {
 			{ typeof(object), "object" },
 			{ typeof(bool), "bool" },
@@ -33,7 +36,7 @@ namespace Terraria.ModLoader
 		};
 
 		private static DetourModManager manager = new DetourModManager();
-		private static HashSet<Assembly> NativeDetouringGranted = new HashSet<Assembly> { Assembly.GetExecutingAssembly() };
+		private static HashSet<Assembly> NativeDetouringGranted = new HashSet<Assembly> {  /* Assembly.GetExecutingAssembly() */ };
 
 		private static bool isInitialized;
 		internal static void Initialize() {
@@ -123,6 +126,8 @@ namespace Terraria.ModLoader
 			if (mod is ModLoaderMod)
 				return;
 
+			Monitor.Enter(HookProtector);
+
 			int hooks = 0, detours = 0, ndetours = 0;
 			bool OnHookUndo(object obj) {
 				hooks++;
@@ -141,8 +146,9 @@ namespace Terraria.ModLoader
 			Detour.OnUndo += OnDetourUndo;
 			NativeDetour.OnUndo += OnNativeDetourUndo;
 
-			foreach (var asm in AssemblyManager.GetModAssemblies(mod.Name))
+			foreach (var asm in AssemblyManager.GetModAssemblies(mod.Name)) {
 				manager.Unload(asm);
+			}
 
 			Hook.OnUndo -= OnHookUndo;
 			Detour.OnUndo -= OnDetourUndo;
@@ -150,6 +156,8 @@ namespace Terraria.ModLoader
 
 			if (hooks > 0 || detours > 0 || ndetours > 0)
 				Logging.tML.Debug($"Unloaded {hooks} hooks, {detours} detours and {ndetours} native detours from {mod.Name}");
+
+			Monitor.Exit(HookProtector);
 		}
 	}
 }
