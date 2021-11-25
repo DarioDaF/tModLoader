@@ -6,11 +6,11 @@
 +  <Import Project="../../WorkspaceInfo.targets" />
    <PropertyGroup>
      <OutputType>WinExe</OutputType>
-     <Version>1.4.3.1</Version>
+     <Version>1.4.3.2</Version>
      <Company>Re-Logic</Company>
      <Copyright>Copyright © 2021 Re-Logic</Copyright>
      <RootNamespace>Terraria</RootNamespace>
-+    <AssemblyName>Terraria</AssemblyName>
++	<AssemblyName>Terraria</AssemblyName>
    </PropertyGroup>
    <PropertyGroup Condition="$(Configuration.Contains('Server'))">
      <OutputType>Exe</OutputType>
@@ -26,7 +26,7 @@
    </PropertyGroup>
    <ItemGroup>
      <Reference Include="CsvHelper" />
-+    <Reference Include="FNA" />
++	<Reference Include="FNA" />
      <Reference Include="Ionic.Zip.CF" />
 -    <Reference Include="Microsoft.Xna.Framework" />
 -    <Reference Include="Microsoft.Xna.Framework.Game" />
@@ -38,10 +38,10 @@
      <Reference Include="RailSDK.Net" />
 -    <ProjectReference Include="../ReLogic/ReLogic.csproj" />
 +    <ProjectReference Include="../ReLogic/ReLogic.csproj">
-+      <Private>false</Private>
-+    </ProjectReference>
++	  <Private>false</Private>
++	</ProjectReference>
      <EmbeddedResource Include="../ReLogic/bin/$(Configuration)/$(TargetFramework)/ReLogic.dll">
-+      <Link>Libraries/ReLogic/ReLogic.dll</Link>
++	  <Link>Libraries/ReLogic/ReLogic.dll</Link>
        <LogicalName>Terraria.Libraries.ReLogic.ReLogic.dll</LogicalName>
      </EmbeddedResource>
      <Reference Include="Steamworks.NET" />
@@ -52,7 +52,7 @@
 -    <Reference Include="System.Runtime.Serialization" />
 -    <Reference Include="System.Windows.Forms" />
 -    <Reference Include="WindowsBase" />
-+    <Reference Update="@(Reference)">
++	<Reference Update="@(Reference)">
 +      <Private>False</Private>
 +    </Reference>
    </ItemGroup>
