@@ -1,5 +1,14 @@
 --- src/TerrariaNetCore/Terraria/Collision.cs
 +++ src/tModLoader/Terraria/Collision.cs
+@@ -940,7 +_,7 @@
+ 					return false;
+ 			}
+ 
+-			for (int l = 0; l < 200; l++) {
++			for (int l = 0; l < Main.maxNPCs; l++) {
+ 				if (Main.npc[l].active && rectangle.Intersects(new Rectangle((int)Main.npc[l].position.X, (int)Main.npc[l].position.Y, Main.npc[l].width, Main.npc[l].height)))
+ 					return false;
+ 			}
 @@ -2100,7 +_,7 @@
  			Vector2 vector2 = default(Vector2);
  			for (int i = num; i < num2; i++) {

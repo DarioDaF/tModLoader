@@ -230,10 +230,12 @@
  		public static int renderCount = 99;
  		private const int MF_BYPOSITION = 1024;
  		public static GraphicsDeviceManager graphics;
-@@ -708,7 +_,7 @@
+@@ -707,8 +_,8 @@
+ 		public const int maxChests = 8000;
  		public const int maxItems = 400;
  		public const int maxProjectiles = 1000;
- 		public const int maxNPCs = 200;
+-		public const int maxNPCs = 200;
++		public const int maxNPCs = 400;
 -		private static UICharacterSelect _characterSelectMenu = new UICharacterSelect();
 +		internal static UICharacterSelect _characterSelectMenu = new UICharacterSelect();
  		private static UIWorldSelect _worldSelectMenu = new UIWorldSelect();
@@ -290,7 +292,7 @@
  		public static bool[] npcCatchable = new bool[670];
  		public static int[] tileFrame = new int[625];
  		public static int[] tileFrameCounter = new int[625];
-@@ -971,7 +_,7 @@
+@@ -971,12 +_,12 @@
  		public static HairstyleUnlocksHelper Hairstyles = new HairstyleUnlocksHelper();
  		public static bool tilesLoaded = false;
  		public static WorldMap Map = new WorldMap(maxTilesX, maxTilesY);
@@ -299,6 +301,12 @@
  		public static Dust[] dust = new Dust[6001];
  		public static Star[] star = new Star[400];
  		public static Item[] item = new Item[401];
+ 		public static int[] timeItemSlotCannotBeReusedFor = new int[401];
+-		public static NPC[] npc = new NPC[201];
++		public static NPC[] npc = new NPC[Main.maxNPCs + 1];
+ 		public static Gore[] gore = new Gore[601];
+ 		public static Rain[] rain = new Rain[maxRain + 1];
+ 		public static Projectile[] projectile = new Projectile[1001];
 @@ -1161,9 +_,9 @@
  		public static List<WorldFileData> WorldList = new List<WorldFileData>();
  		public static WorldFileData ActiveWorldFileData = new WorldFileData();
@@ -311,6 +319,21 @@
  		public static Preferences Configuration = new Preferences(SavePath + Path.DirectorySeparatorChar + "config.json");
  		public static Preferences InputProfiles = new Preferences(SavePath + Path.DirectorySeparatorChar + "input profiles.json");
  		public static KeyboardState inputText;
+@@ -1935,10 +_,10 @@
+ 		public static FrameSkipMode FrameSkipMode = FrameSkipMode.Subtle;
+ 		public static bool terrariasFixedTiming = true;
+ 		private int splashCounter;
+-		public List<int> DrawCacheNPCsMoonMoon = new List<int>(200);
++		public List<int> DrawCacheNPCsMoonMoon = new List<int>(Main.maxNPCs);
+-		public List<int> DrawCacheNPCsOverPlayers = new List<int>(200);
++		public List<int> DrawCacheNPCsOverPlayers = new List<int>(Main.maxNPCs);
+-		public List<int> DrawCacheNPCProjectiles = new List<int>(200);
++		public List<int> DrawCacheNPCProjectiles = new List<int>(Main.maxNPCs);
+-		public List<int> DrawCacheNPCsBehindNonSolidTiles = new List<int>(200);
++		public List<int> DrawCacheNPCsBehindNonSolidTiles = new List<int>(Main.maxNPCs);
+ 		public List<int> DrawCacheProjsBehindNPCsAndTiles = new List<int>(1000);
+ 		public List<int> DrawCacheProjsBehindNPCs = new List<int>(1000);
+ 		public List<int> DrawCacheProjsBehindProjectiles = new List<int>(1000);
 @@ -1972,7 +_,7 @@
  		public static bool _shouldUseWindyDayMusic = false;
  		public static bool _shouldUseStormMusic = false;
@@ -1103,6 +1126,15 @@
  			ClientInitialize();
  			base.Initialize();
  		}
+@@ -5111,7 +_,7 @@
+ 				item[k] = new Item();
+ 			}
+ 
+-			for (int l = 0; l < 201; l++) {
++			for (int l = 0; l < (Main.maxNPCs + 1); l++) { // Create dummy NPC
+ 				npc[l] = new NPC();
+ 				npc[l].whoAmI = l;
+ 			}
 @@ -8372,11 +_,18 @@
  		public static void LoadTestLog(string logname) {
  		}
@@ -1176,7 +1208,7 @@
  					float num2 = musicFade[i] * musicVolume * num;
  					if (i >= 62 && i <= 88) {
  						num2 *= 0.9f;
-@@ -9022,7 +_,11 @@
+@@ -9022,10 +_,14 @@
  			bool flag14 = false;
  			bool flag15 = false;
  			bool flag16 = false;
@@ -1188,7 +1220,11 @@
 +			if (!gameMenu) { // showSplash -> gameMenu. Fix crash iterating active NPCs while unloading mods
  				Microsoft.Xna.Framework.Rectangle rectangle = new Microsoft.Xna.Framework.Rectangle((int)screenPosition.X, (int)screenPosition.Y, screenWidth, screenHeight);
  				int num = 5000;
- 				for (int i = 0; i < 200; i++) {
+-				for (int i = 0; i < 200; i++) {
++				for (int i = 0; i < Main.maxNPCs; i++) {
+ 					if (!npc[i].active)
+ 						continue;
+ 
 @@ -9129,17 +_,22 @@
  							break;
  					}
@@ -1333,7 +1369,7 @@
  			else if ((double)player[myPlayer].position.Y >= worldSurface * 16.0 + (double)(screenHeight / 2) && !WorldGen.oceanDepths((int)(screenPosition.X + (float)(screenWidth / 2)) / 16, (int)(screenPosition.Y + (float)(screenHeight / 2)) / 16)) {
  				if (player[myPlayer].ZoneHallow)
  					newMusic = 78;
-@@ -9397,7 +_,10 @@
+@@ -9397,10 +_,13 @@
  			if (lastMusicPlayed == 50)
  				musicNoCrossFade[51] = true;
  
@@ -1344,7 +1380,11 @@
 +			if (!gameMenu) { // showSplash -> gameMenu. Fix crash iterating active NPCs while unloading mods
  				Microsoft.Xna.Framework.Rectangle rectangle = new Microsoft.Xna.Framework.Rectangle((int)screenPosition.X, (int)screenPosition.Y, screenWidth, screenHeight);
  				int num2 = 5000;
- 				for (int j = 0; j < 200; j++) {
+-				for (int j = 0; j < 200; j++) {
++				for (int j = 0; j < Main.maxNPCs; j++) {
+ 					if (!npc[j].active)
+ 						continue;
+ 
 @@ -9508,6 +_,11 @@
  
  					Microsoft.Xna.Framework.Rectangle value = new Microsoft.Xna.Framework.Rectangle((int)(npc[j].position.X + (float)(npc[j].width / 2)) - num2, (int)(npc[j].position.Y + (float)(npc[j].height / 2)) - num2, num2 * 2, num2 * 2);
@@ -1768,6 +1808,15 @@
  			NPC.RevengeManager.Update();
  			if (netMode != 1) {
  				try {
+@@ -13197,7 +_,7 @@
+ 			if (NPC.offSetDelayTime > 0)
+ 				NPC.offSetDelayTime--;
+ 
+-			for (int k = 0; k < 200; k++) {
++			for (int k = 0; k < Main.maxNPCs; k++) {
+ 				if (ignoreErrors) {
+ 					try {
+ 						npc[k].UpdateNPC(k);
 @@ -13211,9 +_,15 @@
  				else {
  					npc[k].UpdateNPC(k);
@@ -2816,15 +2865,25 @@
  			else if (theNPC.type == 54)
  				num = 2f;
  			else if (theNPC.type == 205)
-@@ -16423,7 +_,7 @@
+@@ -16421,15 +_,15 @@
+ 		protected void DrawNPCs(bool behindTiles = false) {
+ 			bool flag = false;
  			Microsoft.Xna.Framework.Rectangle rectangle = new Microsoft.Xna.Framework.Rectangle((int)screenPosition.X - 800, (int)screenPosition.Y - 800, screenWidth + 1600, screenHeight + 1600);
- 			for (int num = 199; num >= 0; num--) {
+-			for (int num = 199; num >= 0; num--) {
++			for (int num = (Main.maxNPCs - 1); num >= 0; num--) {
  				try {
 -					if (npc[num].active && npc[num].type > 0 && npc[num].type < 670 && !npc[num].hide) {
 +					if (npc[num].active && npc[num].type > 0 && !npc[num].hide) {
  						npc[num].position += npc[num].netOffset;
  						if (npc[num].behindTiles == behindTiles) {
  							if (npc[num].type == 125 || npc[num].type == 126) {
+ 								if (!flag) {
+ 									flag = true;
+-									for (int i = 0; i < 200; i++) {
++									for (int i = 0; i < Main.maxNPCs; i++) {
+ 										if (!npc[i].active || num == i || (npc[i].type != 125 && npc[i].type != 126))
+ 											continue;
+ 
 @@ -16540,12 +_,12 @@
  			}
  		}
@@ -2859,6 +2918,15 @@
  			npcColor = rCurrentNPC.GetNPCColorTintedByBuffs(npcColor);
  			if (type == 50) {
  				Vector2 zero = Vector2.Zero;
+@@ -18243,7 +_,7 @@
+ 													bool flag9 = num71 == 0;
+ 													Vector2 value31 = new Vector2((!flag9) ? 1 : (-1), 1f);
+ 													int num72 = -1;
+-													for (int num73 = 0; num73 < 200; num73++) {
++													for (int num73 = 0; num73 < Main.maxNPCs; num73++) {
+ 														if (npc[num73].active && npc[num73].type == 397 && npc[num73].ai[2] == (float)num71 && npc[num73].ai[3] == (float)rCurrentNPC.whoAmI) {
+ 															num72 = num73;
+ 															break;
 @@ -20357,12 +_,14 @@
  				}
  
@@ -3021,6 +3089,24 @@
  			stringColor = TryApplyingPlayerStringColor(player[proj.owner].stringColor, stringColor);
  			float gravDir = player[proj.owner].gravDir;
  			switch (type) {
+@@ -27781,7 +_,7 @@
+ 			DrawCacheNPCsOverPlayers.Clear();
+ 			DrawCacheNPCProjectiles.Clear();
+ 			DrawCacheNPCsBehindNonSolidTiles.Clear();
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				if (!npc[i].active)
+ 					continue;
+ 
+@@ -27790,7 +_,7 @@
+ 					int num2 = -1;
+ 					int num3 = -1;
+ 					int num4 = -1;
+-					for (int j = 0; j < 200; j++) {
++					for (int j = 0; j < Main.maxNPCs; j++) {
+ 						if (npc[j].active && npc[j].ai[3] == (float)num) {
+ 							if (num2 == -1 && npc[j].type == 397 && npc[j].ai[2] == 0f)
+ 								num2 = j;
 @@ -27823,10 +_,13 @@
  				}
  				else if (npc[i].type == 516 || npc[i].type == 519) {
@@ -3035,7 +3121,7 @@
  			}
  		}
  
-@@ -27860,7 +_,7 @@
+@@ -27860,12 +_,12 @@
  					DrawCacheProjsBehindNPCs.Add(i);
  
  				if (projectile[i].type != 636 && projectile[i].type != 598 && projectile[i].type != 971)
@@ -3044,6 +3130,12 @@
  
  				bool flag = true;
  				if (projectile[i].ai[0] == 1f) {
+ 					int num = (int)projectile[i].ai[1];
+-					if (num >= 0 && num < 200 && npc[num].active && npc[num].type != 492) {
++					if (num >= 0 && num < Main.maxNPCs && npc[num].active && npc[num].type != 492) {
+ 						if (npc[num].behindTiles)
+ 							DrawCacheProjsBehindNPCsAndTiles.Add(i);
+ 						else
 @@ -27877,6 +_,9 @@
  
  				if (flag)
@@ -3054,6 +3146,15 @@
  			}
  		}
  
+@@ -28041,7 +_,7 @@
+ 					DrawWOFTongueToPlayer(i);
+ 			}
+ 
+-			for (int j = 0; j < 200; j++) {
++			for (int j = 0; j < Main.maxNPCs; j++) {
+ 				if (npc[j].active && npc[j].aiStyle == 29)
+ 					DrawWOFRopeToTheHungry(j);
+ 			}
 @@ -28230,10 +_,14 @@
  			Vector2 value = new Vector2((float)(item.width / 2) - vector.X, item.height - frame.Height);
  			Vector2 vector2 = item.position - screenPosition + vector + value;
@@ -3119,6 +3220,15 @@
  					spriteBatch.Draw(TextureAssets.Dust.Value, dust.position - screenPosition, dust.frame, newColor, dust.GetVisualRotation(), new Vector2(4f, 4f), scale, SpriteEffects.None, 0f);
  					if (dust.color.PackedValue != 0) {
  						Microsoft.Xna.Framework.Color color6 = dust.GetColor(newColor);
+@@ -28591,7 +_,7 @@
+ 			bool flag37 = false;
+ 			bool flag38 = false;
+ 			int num = 0;
+-			for (int j = 0; j < 200; j++) {
++			for (int j = 0; j < Main.maxNPCs; j++) {
+ 				if (npc[j].active) {
+ 					if (npc[j].townNPC && npc[j].type != 37)
+ 						num++;
 @@ -29206,8 +_,8 @@
  			int num = (mouseTextColor * 2 + 255) / 3;
  			Microsoft.Xna.Framework.Color textColor = new Microsoft.Xna.Framework.Color(num, num, num, num);
@@ -3343,6 +3453,15 @@
  			UILinkPointNavigator.SetPosition(2503, vector2 + stringSize * 0.5f);
  			UILinkPointNavigator.Shortcuts.NPCCHAT_ButtonsRight2 = true;
  		}
+@@ -30002,7 +_,7 @@
+ 		protected void DrawNPCHousesInWorld() {
+ 			_npcsWithBannersToDraw.Clear();
+ 			_occupantsListToDrawNPCHouses.Clear();
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				if (npc[i].active && npc[i].townNPC && !npc[i].homeless && npc[i].homeTileX > 0 && npc[i].homeTileY > 0 && npc[i].type != 37)
+ 					_npcsWithBannersToDraw.Add(i);
+ 			}
 @@ -30076,7 +_,7 @@
  
  				spriteBatch.Draw(value, new Vector2(homeTileX * 16 - (int)screenPosition.X + num8, num11 - (float)(int)screenPosition.Y + (float)num9 + (float)num10), value2, Lighting.GetColor(homeTileX, num3), 0f, new Vector2(value2.Width / 2, value2.Height / 2), 1f, effects, 0f);
@@ -3543,10 +3662,12 @@
  
  			if (recBigList && !flag9) {
  				UILinkPointNavigator.Shortcuts.CRAFT_CurrentRecipeBig = -1;
-@@ -31304,10 +_,10 @@
+@@ -31303,11 +_,11 @@
+ 				_npcIndexWhoHoldsHeadIndex[i] = -1;
  			}
  
- 			for (int j = 0; j < 200; j++) {
+-			for (int j = 0; j < 200; j++) {
++			for (int j = 0; j < Main.maxNPCs; j++) {
 -				if (npc[j].active && !_npcTypesThatAlreadyDrewAHead.Contains(npc[j].type)) {
 +				if (npc[j].active && !_npcTypesThatAlreadyDrewAHead.Contains(npc[j].type) && npc[j].ModNPC?.TownNPCStayingHomeless != true) {
  					ITownNPCProfile profile;
@@ -3632,7 +3753,12 @@
  
  						MouseTextHackZoom(text, rare, 0);
  						mouseText = true;
-@@ -32050,18 +_,22 @@
+@@ -32046,22 +_,26 @@
+ 
+ 			HoveringOverAnNPC = false;
+ 			if (!mouseText) {
+-				for (int k = 0; k < 200; k++) {
++				for (int k = 0; k < Main.maxNPCs; k++) {
  					if (!npc[k].active)
  						continue;
  
@@ -3836,6 +3962,24 @@
  				ActiveNetDiagnosticsUI.Draw(spriteBatch);
  		}
  
+@@ -34321,7 +_,7 @@
+ 			int num = -1;
+ 			if (PlayerInput.UsingGamepad) {
+ 				Player localPlayer = LocalPlayer;
+-				for (int i = 0; i < 200; i++) {
++				for (int i = 0; i < Main.maxNPCs; i++) {
+ 					NPC nPC = npc[i];
+ 					if ((nPC.life == nPC.lifeMax || nPC.dontTakeDamage) && !nPC.dontTakeDamage && nPC.nameOver > 0f && (num == -1 || nPC.Distance(localPlayer.Center) < npc[num].Distance(localPlayer.Center)))
+ 						num = i;
+@@ -34329,7 +_,7 @@
+ 			}
+ 
+ 			bool flag = false;
+-			for (int num2 = 199; num2 >= 0; num2--) {
++			for (int num2 = (Main.maxNPCs - 1); num2 >= 0; num2--) {
+ 				if (npc[num2].active && npc[num2].type > 0) {
+ 					npc[num2].position += npc[num2].netOffset;
+ 					if (npc[num2].life != npc[num2].lifeMax && !npc[num2].dontTakeDamage) {
 @@ -34402,6 +_,11 @@
  						if (HealthBarDrawSettings == 2)
  							num3 -= 34f;
@@ -3848,6 +3992,33 @@
  						if ((!expertMode || type != 266) && ((type != 439 && type != 440) || npc[num2].ai[0] != 5f)) {
  							if (type >= 134 && type <= 136) {
  								scale = 1.5f;
+@@ -34409,7 +_,7 @@
+ 									flag = true;
+ 									Vector2 value = default(Vector2);
+ 									float num4 = 999999f;
+-									for (int j = 0; j < 200; j++) {
++									for (int j = 0; j < Main.maxNPCs; j++) {
+ 										if (npc[j].active && npc[j].type >= 134 && npc[j].type <= 136) {
+ 											Vector2 vector = player[myPlayer].Center - npc[j].Center;
+ 											if (vector.Length() < num4 && Collision.CanHit(player[myPlayer].Center, 1, 1, npc[j].Center, 1, 1)) {
+@@ -34576,7 +_,7 @@
+ 
+ 		private void DrawInterface_Healthbar_Worm(NPC head, int tailID, float scale) {
+ 			NPC nPC = head;
+-			for (int i = head.whoAmI + 1; i < 200; i++) {
++			for (int i = head.whoAmI + 1; i < Main.maxNPCs; i++) {
+ 				if (npc[i].active && npc[i].type == tailID) {
+ 					nPC = npc[i];
+ 					break;
+@@ -34894,7 +_,7 @@
+ 			Vector2 zero = Vector2.Zero;
+ 			int minionAttackTargetNPC = localPlayer.MinionAttackTargetNPC;
+ 			Microsoft.Xna.Framework.Rectangle value2 = new Microsoft.Xna.Framework.Rectangle((int)screenPosition.X, (int)screenPosition.Y, screenWidth, screenHeight);
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				NPC nPC = npc[i];
+ 				if (nPC.active && nPC.Hitbox.Intersects(value2)) {
+ 					Vector2 value3 = nPC.Center - screenPosition;
 @@ -35120,6 +_,7 @@
  			if (!CanShowInfoAccs)
  				return;
@@ -3935,9 +4106,21 @@
  					flag11 = true;
  					num = 11;
  					text3 = Lang.inter[105].Value;
-@@ -35291,7 +_,8 @@
+@@ -35275,7 +_,7 @@
+ 					int num13 = -1;
+ 					if (player[myPlayer].accCritterGuideCounter <= 0) {
+ 						player[myPlayer].accCritterGuideCounter = 15;
+-						for (int k = 0; k < 200; k++) {
++						for (int k = 0; k < Main.maxNPCs; k++) {
+ 							if (npc[k].active && npc[k].rarity > num12 && (npc[k].Center - player[myPlayer].Center).Length() < (float)num11) {
+ 								num13 = k;
+ 								num12 = npc[k].rarity;
+@@ -35289,9 +_,10 @@
+ 						num13 = player[myPlayer].accCritterGuideNumber;
+ 					}
  
- 					text2 = ((num13 < 0 || num13 >= 200 || !npc[num13].active || npc[num13].rarity <= 0) ? Language.GetTextValue("GameUI.NoRareCreatures") : npc[num13].GivenOrTypeName);
+-					text2 = ((num13 < 0 || num13 >= 200 || !npc[num13].active || npc[num13].rarity <= 0) ? Language.GetTextValue("GameUI.NoRareCreatures") : npc[num13].GivenOrTypeName);
++					text2 = ((num13 < 0 || num13 >= Main.maxNPCs || !npc[num13].active || npc[num13].rarity <= 0) ? Language.GetTextValue("GameUI.NoRareCreatures") : npc[num13].GivenOrTypeName);
  				}
 -				else if (player[myPlayer].accThirdEye && !flag6 && (!player[myPlayer].hideInfo[5] || playerInventory)) {
 +				//else if (player[myPlayer].accThirdEye && !flag6 && (!player[myPlayer].hideInfo[5] || playerInventory)) {
@@ -3945,6 +4128,15 @@
  					flag6 = true;
  					num = 5;
  					text3 = Lang.inter[100].Value;
+@@ -35299,7 +_,7 @@
+ 					if (player[myPlayer].accThirdEyeCounter == 0) {
+ 						player[myPlayer].accThirdEyeNumber = 0;
+ 						player[myPlayer].accThirdEyeCounter = 15;
+-						for (int l = 0; l < 200; l++) {
++						for (int l = 0; l < Main.maxNPCs; l++) {
+ 							if (npc[l].active && !npc[l].friendly && npc[l].damage > 0 && npc[l].lifeMax > 5 && !npc[l].dontCountMe && (npc[l].Center - player[myPlayer].Center).Length() < (float)num14)
+ 								player[myPlayer].accThirdEyeNumber++;
+ 						}
 @@ -35310,14 +_,16 @@
  
  					text2 = ((player[myPlayer].accThirdEyeNumber == 0) ? Language.GetTextValue("GameUI.NoEnemiesNearby") : ((player[myPlayer].accThirdEyeNumber != 1) ? Language.GetTextValue("GameUI.EnemiesNearby", player[myPlayer].accThirdEyeNumber) : Language.GetTextValue("GameUI.OneEnemyNearby")));
@@ -4093,6 +4285,15 @@
  				if (mapStyle == 1 && mapEnabled)
  					Y += 261;
  			}
+@@ -35743,7 +_,7 @@
+ 			Microsoft.Xna.Framework.Rectangle rectangle = new Microsoft.Xna.Framework.Rectangle((int)screenPosition.X, (int)screenPosition.Y, screenWidth, screenHeight);
+ 			int num = 5000;
+ 			int num2 = 0;
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				if (!npc[i].active)
+ 					continue;
+ 
 @@ -36142,6 +_,10 @@
  
  		private static void TryDisposingEverything() {
@@ -4133,7 +4334,7 @@
  				spriteBatch.Draw(TextureAssets.Logo.Value, new Vector2(screenWidth / 2, 100f), new Microsoft.Xna.Framework.Rectangle(0, 0, TextureAssets.Logo.Width(), TextureAssets.Logo.Height()), color2, logoRotation, new Vector2(TextureAssets.Logo.Width() / 2, TextureAssets.Logo.Height() / 2), logoScale, SpriteEffects.None, 0f);
  				spriteBatch.Draw(TextureAssets.Logo2.Value, new Vector2(screenWidth / 2, 100f), new Microsoft.Xna.Framework.Rectangle(0, 0, TextureAssets.Logo.Width(), TextureAssets.Logo.Height()), color3, logoRotation, new Vector2(TextureAssets.Logo.Width() / 2, TextureAssets.Logo.Height() / 2), logoScale, SpriteEffects.None, 0f);
  			}
-@@ -36561,8 +_,21 @@
+@@ -36561,13 +_,26 @@
  			if (menuMode == -1)
  				menuMode = 0;
  
@@ -4156,6 +4357,12 @@
  
  			if (menuMode == 1212) {
  				array9[0] = Lang.menu[102].Value;
+ 				num4 = 50;
+-				num2 = 200;
++				num2 = 200; // What is going on here???
+ 				num4 = 33;
+ 				num2 = 200;
+ 				array4[0] = -20;
 @@ -36599,7 +_,7 @@
  				if (selectedMenu >= 1) {
  					changeTheTitle = true;
@@ -4615,8 +4822,12 @@
  				if (!((float)((k + 1) * textureMaxWidth) > num7) || !((float)(k * textureMaxWidth) < num7 + num9))
  					continue;
  
-@@ -42936,7 +_,7 @@
- 						for (int m = 0; m < 200; m++) {
+@@ -42933,10 +_,10 @@
+ 
+ 					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, transformMatrix);
+ 					try {
+-						for (int m = 0; m < 200; m++) {
++						for (int m = 0; m < Main.maxNPCs; m++) {
  							if (npc[m].active && npc[m].townNPC) {
  								ITownNPCProfile profile;
 -								int num54 = (!TownNPCProfiles.Instance.GetProfile(npc[m].type, out profile)) ? NPC.TypeToDefaultHeadIndex(npc[m].type) : profile.GetHeadTextureIndex(npc[m]);
@@ -4624,8 +4835,12 @@
  								if (num54 > 0) {
  									SpriteEffects dir = SpriteEffects.None;
  									if (npc[m].direction > 0)
-@@ -43021,7 +_,7 @@
- 					for (int num64 = 0; num64 < 200; num64++) {
+@@ -43018,10 +_,10 @@
+ 					DrawMiscMapIcons(spriteBatch, new Vector2(num13, num14), new Vector2(num3 + num11, num4 + num12), new Microsoft.Xna.Framework.Rectangle(miniMapX, miniMapY, miniMapWidth, miniMapHeight), num5, num63, ref text);
+ 					spriteBatch.End();
+ 					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, transformMatrix2);
+-					for (int num64 = 0; num64 < 200; num64++) {
++					for (int num64 = 0; num64 < Main.maxNPCs; num64++) {
  						if (npc[num64].active && npc[num64].townNPC) {
  							ITownNPCProfile profile2;
 -							int num65 = (!TownNPCProfiles.Instance.GetProfile(npc[num64].type, out profile2)) ? NPC.TypeToDefaultHeadIndex(npc[num64].type) : profile2.GetHeadTextureIndex(npc[num64]);
@@ -4649,8 +4864,12 @@
  					}
  				}
  
-@@ -43267,7 +_,7 @@
- 				for (int num112 = 0; num112 < 200; num112++) {
+@@ -43264,10 +_,10 @@
+ 				DrawMiscMapIcons(spriteBatch, Vector2.Zero, new Vector2(num - 10f * num5, num2 - 10f * num5), null, num5, num111, ref text);
+ 				spriteBatch.End();
+ 				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+-				for (int num112 = 0; num112 < 200; num112++) {
++				for (int num112 = 0; num112 < Main.maxNPCs; num112++) {
  					if (npc[num112].active && npc[num112].townNPC) {
  						ITownNPCProfile profile3;
 -						int num113 = (!TownNPCProfiles.Instance.GetProfile(npc[num112].type, out profile3)) ? NPC.TypeToDefaultHeadIndex(npc[num112].type) : profile3.GetHeadTextureIndex(npc[num112]);
@@ -5279,7 +5498,7 @@
  					int num6 = dayRate;
  					if (num6 < 1)
  						num6 = 1;
-@@ -50148,6 +_,9 @@
+@@ -50148,8 +_,11 @@
  					int num7 = (int)(27000.0 / (double)num6);
  					num7 *= 4;
  					if (rand.Next(num7) == 0) {
@@ -5287,8 +5506,38 @@
 +
 +					if (rand.NextDouble() < dayRate / (27000.0 * 4)) {
  						int num8 = 0;
- 						for (int j = 0; j < 200; j++) {
+-						for (int j = 0; j < 200; j++) {
++						for (int j = 0; j < Main.maxNPCs; j++) {
  							if (npc[j].active && npc[j].townNPC && npc[j].type != 37 && npc[j].type != 453)
+ 								num8++;
+ 						}
+@@ -50178,7 +_,7 @@
+ 
+ 					if (WorldGen.spawnHardBoss > 0 && netMode != 1 && time > 4860.0) {
+ 						bool flag2 = false;
+-						for (int l = 0; l < 200; l++) {
++						for (int l = 0; l < Main.maxNPCs; l++) {
+ 							if (npc[l].active && npc[l].boss)
+ 								flag2 = true;
+ 						}
+@@ -50296,7 +_,7 @@
+ 
+ 					if (flag && rand.Next(3) == 0) {
+ 						int num = 0;
+-						for (int j = 0; j < 200; j++) {
++						for (int j = 0; j < Main.maxNPCs; j++) {
+ 							if (npc[j].active && npc[j].townNPC)
+ 								num++;
+ 						}
+@@ -50313,7 +_,7 @@
+ 
+ 				if (netMode != 1 && !pumpkinMoon && !DD2Event.Ongoing && !snowMoon && WorldGen.altarCount > 0 && hardMode && !WorldGen.spawnEye && rand.Next(10) == 0) {
+ 					bool flag2 = false;
+-					for (int k = 0; k < 200; k++) {
++					for (int k = 0; k < Main.maxNPCs; k++) {
+ 						if (npc[k].active && npc[k].boss)
+ 							flag2 = true;
+ 					}
 @@ -50505,6 +_,11 @@
  		}
  
@@ -5319,6 +5568,15 @@
  				townNPCCanSpawn[j] = false;
  			}
  
+@@ -50572,7 +_,7 @@
+ 			int num30 = 0;
+ 			int num31 = 0;
+ 			int num32 = 0;
+-			for (int k = 0; k < 200; k++) {
++			for (int k = 0; k < Main.maxNPCs; k++) {
+ 				if (npc[k].active && npc[k].townNPC) {
+ 					if (npc[k].type != 368 && npc[k].type != 37 && npc[k].type != 453 && !npc[k].homeless)
+ 						WorldGen.QuickFindHome(k);
 @@ -50667,6 +_,7 @@
  					if (npc[k].type == 663)
  						num31++;

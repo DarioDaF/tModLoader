@@ -540,6 +540,24 @@
  				}
  
  				buffer[bufferIndex].checkBytes = false;
+@@ -2232,7 +_,7 @@
+ 					SendData(10, whoAmi, -1, null, number, i, 200f, num2);
+ 				}
+ 
+-				for (int j = 0; j < 200; j++) {
++				for (int j = 0; j < Main.maxNPCs; j++) {
+ 					if (Main.npc[j].active && Main.npc[j].townNPC) {
+ 						int sectionX2 = Netplay.GetSectionX((int)(Main.npc[j].position.X / 16f));
+ 						int sectionY2 = Netplay.GetSectionY((int)(Main.npc[j].position.Y / 16f));
+@@ -2297,7 +_,7 @@
+ 
+ 		private static void SendNPCHousesAndTravelShop(int plr) {
+ 			bool flag = false;
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				if (Main.npc[i].active && Main.npc[i].townNPC && NPC.TypeToDefaultHeadIndex(Main.npc[i].type) > 0) {
+ 					if (!flag && Main.npc[i].type == 368)
+ 						flag = true;
 @@ -2324,8 +_,7 @@
  			}
  

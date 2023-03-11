@@ -289,6 +289,81 @@
  			if (type == 160) {
  				if ((double)roomY2 > Main.worldSurface)
  					return false;
+@@ -1316,7 +_,7 @@
+ 
+ 		public static void UnspawnTravelNPC() {
+ 			int num = -1;
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				if (Main.npc[i].active && Main.npc[i].type == 368) {
+ 					num = i;
+ 					break;
+@@ -1355,7 +_,7 @@
+ 			if (Main.eclipse || !Main.dayTime || (Main.invasionType > 0 && Main.invasionDelay == 0 && Main.invasionSize > 0))
+ 				return;
+ 
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				if (Main.npc[i].active && Main.npc[i].type == 368)
+ 					return;
+ 			}
+@@ -1363,9 +_,9 @@
+ 			Chest.SetupTravelShop();
+ 			NetMessage.SendTravelShop(-1);
+ 			int num = 0;
+-			int[] array = new int[200];
++			int[] array = new int[Main.maxNPCs];
+ 			int num2 = 0;
+-			for (int j = 0; j < 200; j++) {
++			for (int j = 0; j < Main.maxNPCs; j++) {
+ 				if (Main.npc[j].active && Main.npc[j].townNPC && Main.npc[j].type != 37 && !Main.npc[j].homeless) {
+ 					array[num2] = j;
+ 					num2++;
+@@ -1608,7 +_,7 @@
+ 
+ 		private static int FindAHomelessNPC() {
+ 			int result = -1;
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				if (Main.npc[i].active && Main.npc[i].homeless && Main.npc[i].type == prioritizedTownNPCType && CheckSpecialTownNPCSpawningConditions(Main.npc[i].type)) {
+ 					result = i;
+ 					break;
+@@ -1620,7 +_,7 @@
+ 
+ 		private static bool IsRoomConsideredAlreadyOccupied(int spawnTileX, int spawnTileY, int npcTypeToSpawn) {
+ 			bool result = false;
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				NPC nPC = Main.npc[i];
+ 				if (nPC.active && nPC.townNPC && !nPC.homeless && nPC.homeTileX == spawnTileX && nPC.homeTileY == spawnTileY && !TownManager.CanNPCsLiveWithEachOther(npcTypeToSpawn, nPC)) {
+ 					result = true;
+@@ -1633,7 +_,7 @@
+ 
+ 		public static void CheckAchievement_RealEstate() {
+ 			bool[] array = new bool[670];
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				if (Main.npc[i].active && Main.npc[i].type >= 0 && Main.npc[i].type < 670)
+ 					array[Main.npc[i].type] = true;
+ 			}
+@@ -1733,7 +_,7 @@
+ 
+ 		private static bool IsRoomConsideredOccupiedForNPCIndex(int npc) {
+ 			bool result = true;
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				if (i != npc) {
+ 					NPC nPC = Main.npc[i];
+ 					if (nPC.active && nPC.townNPC && !nPC.homeless && nPC.homeTileX == bestX && nPC.homeTileY == bestY && !TownManager.CanNPCsLiveWithEachOther(Main.npc[npc], nPC)) {
+@@ -1747,7 +_,7 @@
+ 		}
+ 
+ 		private static bool ScoreRoom_IsThisRoomOccupiedBySomeone(int ignoreNPC = -1, int npcTypeAsking = -1) {
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				if (!Main.npc[i].active || !Main.npc[i].townNPC || ignoreNPC == i || Main.npc[i].homeless)
+ 					continue;
+ 
 @@ -1821,7 +_,7 @@
  			int num = 0;
  			int num2 = 50;
@@ -316,6 +391,15 @@
  			}
  
  			if (x < roomX1)
+@@ -2178,7 +_,7 @@
+ 				}
+ 			}
+ 
+-			for (int l = 0; l < 200; l++) {
++			for (int l = 0; l < Main.maxNPCs; l++) {
+ 				if (Main.npc[l].active) {
+ 					Rectangle value2 = new Rectangle((int)Main.npc[l].position.X, (int)Main.npc[l].position.Y, Main.npc[l].width, Main.npc[l].height);
+ 					if (rectangle.Intersects(value2))
 @@ -2309,15 +_,29 @@
  		public static void setWorldSize() {
  			Main.bottomWorld = Main.maxTilesY * 16;
@@ -577,7 +661,8 @@
  				Main.timeItemSlotCannotBeReusedFor[num5] = 0;
  			}
  
- 			for (int num6 = 0; num6 < 200; num6++) {
+-			for (int num6 = 0; num6 < 200; num6++) {
++			for (int num6 = 0; num6 < Main.maxNPCs; num6++) {
  				Main.npc[num6] = new NPC();
 +				Main.npc[num6].whoAmI = num6;
  			}
@@ -2365,10 +2450,12 @@
  			if (worldUpdateRate == 0)
  				return;
  
-@@ -46478,7 +_,7 @@
+@@ -46477,8 +_,8 @@
+ 				checkNPCSpawns = true;
  				spawnDelay = 0;
  				if (prioritizedTownNPCType != 37) {
- 					for (int i = 0; i < 200; i++) {
+-					for (int i = 0; i < 200; i++) {
++					for (int i = 0; i < Main.maxNPCs; i++) {
 -						if (Main.npc[i].active && Main.npc[i].homeless && Main.npc[i].townNPC && Main.npc[i].type != 368) {
 +						if (Main.npc[i].active && Main.npc[i].homeless && Main.npc[i].townNPC && Main.npc[i].type != 368 && Main.npc[i].ModNPC?.TownNPCStayingHomeless != true) {
  							prioritizedTownNPCType = Main.npc[i].type;
@@ -2655,3 +2742,30 @@
  				result = false;
  
  			return result;
+@@ -57275,7 +_,7 @@
+ 					for (int num5 = num2; num5 > 100; num5--) {
+ 						if (!Collision.SolidTiles(num3 + num4 - 10, num3 + num4 + 10, num5 - 20, num5 + 15) && !PlayerLOS(num3 + num4 - 10, num5) && !PlayerLOS(num3 + num4 + 10, num5) && !PlayerLOS(num3 + num4 - 10, num5 - 20) && !PlayerLOS(num3 + num4 + 10, num5 - 20)) {
+ 							int num6 = NPC.NewNPC(new EntitySource_WorldEvent(), (num3 + num4) * 16, num5 * 16, array[j]);
+-							if (Main.netMode == 2 && num6 < 200)
++							if (Main.netMode == 2 && num6 < Main.maxNPCs)
+ 								NetMessage.SendData(23, -1, -1, null, num6);
+ 
+ 							flag = true;
+@@ -57307,7 +_,7 @@
+ 			bool flag3 = false;
+ 			bool flag4 = false;
+ 			bool flag5 = false;
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				if (Main.npc[i].active) {
+ 					switch (Main.npc[i].type) {
+ 						case 398:
+@@ -57355,7 +_,7 @@
+ 		}
+ 
+ 		public static void GetRidOfCultists() {
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				if (Main.npc[i].active && (Main.npc[i].type == 437 || Main.npc[i].type == 438 || Main.npc[i].type == 379)) {
+ 					Main.npc[i].active = false;
+ 					if (Main.netMode != 1)

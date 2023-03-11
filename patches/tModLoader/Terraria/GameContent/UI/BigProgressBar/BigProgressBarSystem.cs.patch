@@ -13,7 +13,7 @@
  	{
  		private IBigProgressBar _currentBar;
  		private CommonBossBigProgressBar _bossBar = new CommonBossBigProgressBar();
-@@ -50,16 +_,30 @@
+@@ -50,23 +_,37 @@
  			{ 668, _deerclopsBar }		};
  
  		public void Update() {
@@ -45,6 +45,23 @@
  		}
  
  		private void TryFindingNPCToTrack() {
+ 			Rectangle value = new Rectangle((int)Main.screenPosition.X, (int)Main.screenPosition.Y, Main.screenWidth, Main.screenHeight);
+ 			value.Inflate(5000, 5000);
+ 			float num = float.PositiveInfinity;
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				NPC nPC = Main.npc[i];
+ 				if (nPC.active && nPC.Hitbox.Intersects(value)) {
+ 					float num2 = nPC.Distance(Main.LocalPlayer.Center);
+@@ -77,7 +_,7 @@
+ 		}
+ 
+ 		public bool TryTracking(int npcIndex) {
+-			if (npcIndex < 0 || npcIndex > 200)
++			if (npcIndex < 0 || npcIndex > Main.maxNPCs) // OR ==?
+ 				return false;
+ 
+ 			NPC nPC = Main.npc[npcIndex];
 @@ -88,7 +_,12 @@
  			bigProgressBarInfo.npcIndexToAimAt = npcIndex;
  			BigProgressBarInfo info = bigProgressBarInfo;
