@@ -71,7 +71,25 @@
  					return new WorldUIAnchor(Main.projectile[meta]);
  				default:
  					throw new Exception("How did you end up getting this?");
-@@ -347,7 +_,7 @@
+@@ -109,7 +_,7 @@
+ 		}
+ 
+ 		public static void CheckForNPCsToReactToEmoteBubble(int emoteID, Player player) {
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				NPC nPC = Main.npc[i];
+ 				if (nPC != null && nPC.active && nPC.aiStyle == 7 && nPC.townNPC && !(nPC.ai[0] >= 2f) && ((player.CanBeTalkedTo && player.Distance(nPC.Center) < 200f) || !Collision.CanHitLine(nPC.Top, 0, 0, player.Top, 0, 0))) {
+ 					int direction = (nPC.position.X < player.position.X).ToDirectionInt();
+@@ -222,7 +_,7 @@
+ 			Player plr = Main.player[Player.FindClosest(((NPC)anchor.entity).Center, 0, 0)];
+ 			List<int> list = new List<int>();
+ 			bool flag = false;
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				if (Main.npc[i].active && Main.npc[i].boss)
+ 					flag = true;
+ 			}
+@@ -347,17 +_,17 @@
  		}
  
  		private void ProbeTownNPCs(List<int> list) {
@@ -80,7 +98,10 @@
  				CountNPCs[i] = 0;
  			}
  
-@@ -357,7 +_,7 @@
+-			for (int j = 0; j < 200; j++) {
++			for (int j = 0; j < Main.maxNPCs; j++) {
+ 				if (Main.npc[j].active)
+ 					CountNPCs[Main.npc[j].type]++;
  			}
  
  			int type = ((NPC)anchor.entity).type;

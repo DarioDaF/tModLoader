@@ -165,6 +165,15 @@
  			switch (_type) {
  				case 13:
  				case 15:
+@@ -3415,7 +_,7 @@
+ 						bool flag = false;
+ 						float num11 = 1500f;
+ 						float num12 = 850f;
+-						for (int j = 0; j < 200; j++) {
++						for (int j = 0; j < Main.maxNPCs; j++) {
+ 							NPC nPC2 = Main.npc[j];
+ 							if (!nPC2.CanBeChasedBy(this))
+ 								continue;
 @@ -3495,10 +_,13 @@
  						else
  							Lighting.AddLight(mountedPlayer.Center + Vector2.UnitX * mountedPlayer.direction * 20f, vector7.X, vector7.Y, vector7.Z);
@@ -179,6 +188,15 @@
  					}
  					if (mountedPlayer.statLife <= mountedPlayer.statLifeMax2 / 2)
  						mountedPlayer.MountFishronSpecialCounter = 60f;
+@@ -3569,7 +_,7 @@
+ 						int damage = 60;
+ 						int num8 = 0;
+ 						float num9 = 0f;
+-						for (int i = 0; i < 200; i++) {
++						for (int i = 0; i < Main.maxNPCs; i++) {
+ 							NPC nPC = Main.npc[i];
+ 							if (nPC.active && nPC.immune[mountedPlayer.whoAmI] <= 0 && !nPC.dontTakeDamage && nPC.Distance(minecartMechPoint) < 300f && nPC.CanBeChasedBy(mountedPlayer) && Collision.CanHitLine(nPC.position, nPC.width, nPC.height, minecartMechPoint, 0, 0) && Math.Abs(MathHelper.WrapAngle(MathHelper.WrapAngle(nPC.AngleFrom(minecartMechPoint)) - MathHelper.WrapAngle((mountedPlayer.fullRotation + (float)num4 == -1f) ? ((float)Math.PI) : 0f))) < (float)Math.PI / 4f) {
+ 								Vector2 v = nPC.position + nPC.Size * Utils.RandomVector2(Main.rand, 0f, 1f) - minecartMechPoint;
 @@ -3674,7 +_,7 @@
  			if (_type == -1)
  				return;

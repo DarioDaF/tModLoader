@@ -270,10 +270,12 @@
  
  		public Vector2 BlehOldPositionFixer => -Vector2.UnitY;
  
-@@ -2084,6 +_,7 @@
+@@ -2083,7 +_,8 @@
+ 
  		public void SetTalkNPC(int npcIndex, bool fromNet = false) {
  			talkNPC = npcIndex;
- 			if (Main.netMode != 1 && npcIndex >= 0 && npcIndex < 200)
+-			if (Main.netMode != 1 && npcIndex >= 0 && npcIndex < 200)
++			if (Main.netMode != 1 && npcIndex >= 0 && npcIndex < Main.maxNPCs)
 +				// Gut feeling there is a to do on the above conditional
  				Main.BestiaryTracker.Chats.RegisterChatStartWith(Main.npc[npcIndex]);
  
@@ -1318,6 +1320,15 @@
  				}
  				else if (buffType[j] == 116) {
  					inferno = true;
+@@ -6842,7 +_,7 @@
+ 					if (whoAmI != Main.myPlayer)
+ 						continue;
+ 
+-					for (int k = 0; k < 200; k++) {
++					for (int k = 0; k < Main.maxNPCs; k++) {
+ 						NPC nPC = Main.npc[k];
+ 						if (nPC.active && !nPC.friendly && nPC.damage > 0 && !nPC.dontTakeDamage && !nPC.buffImmune[num2] && CanNPCBeHitByPlayerOrPlayerProjectile(nPC) && Vector2.Distance(base.Center, nPC.Center) <= num3) {
+ 							if (nPC.FindBuffIndex(num2) == -1)
 @@ -6874,10 +_,13 @@
  					}
  				}
@@ -2010,6 +2021,15 @@
  
  			for (int n = 13; n < 20; n++) {
  				if (IsAValidEquipmentSlotForIteration(n))
+@@ -9717,7 +_,7 @@
+ 			float num = 500f;
+ 			int damage = 18;
+ 			_hallucinationCandidates.Clear();
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				NPC nPC = Main.npc[i];
+ 				if (nPC.CanBeChasedBy(this) && !(Distance(nPC.Center) > num) && Collision.CanHitLine(position, width, height, nPC.position, nPC.width, nPC.height))
+ 					_hallucinationCandidates.Add(nPC);
 @@ -9825,6 +_,10 @@
  		}
  
@@ -2248,6 +2268,15 @@
  		}
  
  		public void UpdateSocialShadow() {
+@@ -11861,7 +_,7 @@
+ 			Vector2 value3 = Vector2.Zero;
+ 			Vector2 value4 = Vector2.Zero;
+ 			_ = Vector2.Zero;
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				if (!Main.npc[i].active)
+ 					continue;
+ 
 @@ -11898,6 +_,10 @@
  			bool flag6 = ZoneRain && ZoneSnow;
  			bool flag7 = point.Y > Main.maxTilesY - 320;
@@ -2656,6 +2685,15 @@
  				for (int i = 0; i < num2; i++) {
  					WorldGen.KillTile_MakeTileDust(point.X, point.Y, tile);
  				}
+@@ -14568,7 +_,7 @@
+ 
+ 		public int CollideWithNPCs(Rectangle myRect, float Damage, float Knockback, int NPCImmuneTime, int PlayerImmuneTime) {
+ 			int num = 0;
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				NPC nPC = Main.npc[i];
+ 				if (!nPC.active || nPC.dontTakeDamage || nPC.friendly || nPC.immune[whoAmI] != 0 || !CanNPCBeHitByPlayerOrPlayerProjectile(nPC))
+ 					continue;
 @@ -14601,8 +_,10 @@
  				damage = ((!Main.expertMode) ? ((int)((float)damage * ItemID.Sets.BannerStrength[Item.BannerToItem(num)].NormalDamageDealt)) : ((int)((float)damage * ItemID.Sets.BannerStrength[Item.BannerToItem(num)].ExpertDamageDealt)));
  
@@ -2668,7 +2706,15 @@
  
  			NPCKillAttempt attempt = new NPCKillAttempt(npc);
  			int dmg = (int)npc.StrikeNPC(damage, knockback, direction, crit);
-@@ -14663,7 +_,7 @@
+@@ -14656,14 +_,14 @@
+ 				rect.Offset(0, height - 1);
+ 				rect.Height = 2;
+ 				rect.Inflate(12, 6);
+-				for (int i = 0; i < 200; i++) {
++				for (int i = 0; i < Main.maxNPCs; i++) {
+ 					NPC nPC = Main.npc[i];
+ 					if (!nPC.active || nPC.dontTakeDamage || nPC.friendly || nPC.immune[whoAmI] != 0 || !CanNPCBeHitByPlayerOrPlayerProjectile(nPC))
+ 						continue;
  
  					Rectangle rect2 = nPC.getRect();
  					if (rect.Intersects(rect2) && (nPC.noTileCollide || Collision.CanHit(base.position, width, height, nPC.position, nPC.width, nPC.height))) {
@@ -2677,7 +2723,24 @@
  						float knockback = 5f;
  						int direction = base.direction;
  						if (velocity.X < 0f)
-@@ -15065,16 +_,17 @@
+@@ -14688,7 +_,7 @@
+ 				rect3.Offset(0, height - 1);
+ 				rect3.Height = 2;
+ 				rect3.Inflate(12, 6);
+-				for (int j = 0; j < 200; j++) {
++				for (int j = 0; j < Main.maxNPCs; j++) {
+ 					NPC nPC2 = Main.npc[j];
+ 					if (!nPC2.active || nPC2.dontTakeDamage || nPC2.friendly || nPC2.immune[whoAmI] != 0 || !CanNPCBeHitByPlayerOrPlayerProjectile(nPC2))
+ 						continue;
+@@ -15058,23 +_,24 @@
+ 			if (dash == 2 && eocDash > 0) {
+ 				if (eocHit < 0) {
+ 					Rectangle rectangle = new Rectangle((int)((double)position.X + (double)velocity.X * 0.5 - 4.0), (int)((double)position.Y + (double)velocity.Y * 0.5 - 4.0), width + 8, height + 8);
+-					for (int i = 0; i < 200; i++) {
++					for (int i = 0; i < Main.maxNPCs; i++) {
+ 						NPC nPC = Main.npc[i];
+ 						if (!nPC.active || nPC.dontTakeDamage || nPC.friendly || (nPC.aiStyle == 112 && !(nPC.ai[2] <= 1f)) || !CanNPCBeHitByPlayerOrPlayerProjectile(nPC))
+ 							continue;
  
  						Rectangle rect = nPC.getRect();
  						if (rectangle.Intersects(rect) && (nPC.noTileCollide || CanHit(nPC))) {
@@ -2699,6 +2762,15 @@
  								crit = true;
  
  							int num3 = base.direction;
+@@ -15103,7 +_,7 @@
+ 
+ 			if (dash == 3 && dashDelay < 0 && whoAmI == Main.myPlayer) {
+ 				Rectangle rectangle2 = new Rectangle((int)((double)position.X + (double)velocity.X * 0.5 - 4.0), (int)((double)position.Y + (double)velocity.Y * 0.5 - 4.0), width + 8, height + 8);
+-				for (int j = 0; j < 200; j++) {
++				for (int j = 0; j < Main.maxNPCs; j++) {
+ 					NPC nPC2 = Main.npc[j];
+ 					if (!nPC2.active || nPC2.dontTakeDamage || nPC2.friendly || nPC2.immune[whoAmI] > 0 || (nPC2.aiStyle == 112 && !(nPC2.ai[2] <= 1f)) || !CanNPCBeHitByPlayerOrPlayerProjectile(nPC2))
+ 						continue;
 @@ -15115,16 +_,17 @@
  							ConsumeSolarFlare();
  						}
@@ -2847,6 +2919,15 @@
  				if (!Falling) {
  					float num3 = Math.Abs(velocity.X) / 3f;
  					if ((float)Main.rand.Next(100) > num3 * 100f)
+@@ -17053,7 +_,7 @@
+ 				return;
+ 
+ 			int num3 = 0;
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				if (Main.npc[i].active && !Main.npc[i].homeless && !NPCID.Sets.IsTownPet[Main.npc[i].type] && NPC.TypeToDefaultHeadIndex(Main.npc[i].type) > 0)
+ 					num3++;
+ 			}
 @@ -17181,6 +_,8 @@
  		}
  
@@ -3139,9 +3220,12 @@
  						if (buffType[num79] == 38)
  							DelBuff(num79);
  					}
-@@ -19677,6 +_,7 @@
+@@ -19675,8 +_,9 @@
+ 
+ 				if (mount.Active && mount.Cart && Math.Abs(base.velocity.X) > 4f) {
  					Rectangle rectangle2 = new Rectangle((int)base.position.X, (int)base.position.Y, width, height);
- 					for (int num80 = 0; num80 < 200; num80++) {
+-					for (int num80 = 0; num80 < 200; num80++) {
++					for (int num80 = 0; num80 < Main.maxNPCs; num80++) {
  						if (Main.npc[num80].active && !Main.npc[num80].dontTakeDamage && !Main.npc[num80].friendly && Main.npc[num80].immune[i] == 0 && CanNPCBeHitByPlayerOrPlayerProjectile(Main.npc[num80]) && rectangle2.Intersects(new Rectangle((int)Main.npc[num80].position.X, (int)Main.npc[num80].position.Y, Main.npc[num80].width, Main.npc[num80].height))) {
 +							/*
  							float num81 = meleeCrit;
@@ -3263,6 +3347,15 @@
  				r = new Rectangle(chestPointX * 16, chestPointY * 16, 48, 32);
  
  			if (tile.type == 29)
+@@ -21621,7 +_,7 @@
+ 				return;
+ 
+ 			Rectangle rectangle = new Rectangle((int)position.X, (int)position.Y, width, height);
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				if (!Main.npc[i].active || Main.npc[i].friendly || Main.npc[i].damage <= 0)
+ 					continue;
+ 
 @@ -21639,6 +_,9 @@
  						break;
  				}
@@ -3866,6 +3959,15 @@
  							if (buffType[l] >= 95 && buffType[l] <= 97)
  								DelBuff(l);
  						}
+@@ -27330,7 +_,7 @@
+ 					}
+ 
+ 					if (brainOfConfusionItem != null && !brainOfConfusionItem.IsAir && Main.myPlayer == whoAmI) {
+-						for (int num9 = 0; num9 < 200; num9++) {
++						for (int num9 = 0; num9 < Main.maxNPCs; num9++) {
+ 							if (!Main.npc[num9].active || Main.npc[num9].friendly)
+ 								continue;
+ 
 @@ -27358,6 +_,8 @@
  						Projectile.NewProjectile(GetProjectileSource_Accessory(brainOfConfusionItem), base.Center.X + (float)Main.rand.Next(-40, 40), base.Center.Y - (float)Main.rand.Next(20, 60), velocity.X * 0.3f, velocity.Y * 0.3f, 565, 0, 0f, whoAmI);
  					}
@@ -3964,7 +4066,7 @@
  			for (int j = 0; j < 100; j++) {
  				if (stoned) {
  					Dust.NewDust(position, width, height, 1, 2 * hitDirection, -2f);
-@@ -27653,6 +_,7 @@
+@@ -27653,12 +_,13 @@
  				}
  			}
  
@@ -3972,6 +4074,13 @@
  			mount.Dismount(this);
  			dead = true;
  			respawnTimer = 600;
+ 			bool flag = false;
+ 			if (Main.netMode != 0 && !pvp) {
+-				for (int k = 0; k < 200; k++) {
++				for (int k = 0; k < Main.maxNPCs; k++) {
+ 					if (Main.npc[k].active && (Main.npc[k].boss || Main.npc[k].type == 13 || Main.npc[k].type == 14 || Main.npc[k].type == 15) && Math.Abs(base.Center.X - Main.npc[k].Center.X) + Math.Abs(base.Center.Y - Main.npc[k].Center.Y) < 4000f) {
+ 						flag = true;
+ 						break;
 @@ -27672,6 +_,7 @@
  			if (Main.expertMode)
  				respawnTimer = (int)((double)respawnTimer * 1.5);
@@ -4235,6 +4344,15 @@
  			if (num5 > 0) {
  				Vector2 vector = Main.ReverseGravitySupport(Main.MouseScreen) + Main.screenPosition;
  				if (Main.SmartCursorIsUsed || PlayerInput.UsingGamepad)
+@@ -29887,7 +_,7 @@
+ 
+ 		public bool SummonItemCheck() {
+ 			int type = inventory[selectedItem].type;
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				NPC nPC = Main.npc[i];
+ 				if (nPC.active && ((type == 43 && nPC.type == 4) || (type == 70 && nPC.type == 13) || ((type == 560) & (nPC.type == 50)) || (type == 544 && nPC.type == 125) || (type == 544 && nPC.type == 126) || (type == 556 && nPC.type == 134) || (type == 557 && nPC.type == 127) || (type == 1133 && nPC.type == 222) || (type == 1331 && nPC.type == 266) || (type == 4988 && nPC.type == 657) || (type == 5120 && nPC.type == 668)))
+ 					return false;
 @@ -29898,8 +_,8 @@
  
  		public PlayerFishingConditions GetFishingConditions() {
@@ -4325,6 +4443,15 @@
  			if (inventory[num].stack <= 0)
  				inventory[num].SetDefaults();
  		}
+@@ -30150,7 +_,7 @@
+ 			float knockBack = 7f;
+ 			float num = 640f;
+ 			NPC nPC = null;
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				NPC nPC2 = Main.npc[i];
+ 				if (nPC2 != null && nPC2.active && nPC2.CanBeChasedBy(this) && Collision.CanHit(this, nPC2)) {
+ 					float num2 = Vector2.Distance(nPC2.Center, base.Center);
 @@ -30177,6 +_,9 @@
  		}
  
@@ -4743,7 +4870,12 @@
  				if (Main.netMode != 0)
  					NetMessage.SendPlayerHurt(i, playerDeathReason, num, direction, flag, pvp: true, -1);
  
-@@ -31142,11 +_,18 @@
+@@ -31138,15 +_,22 @@
+ 		public bool HasNPCBannerBuff(int bannerType) => Main.SceneMetrics.NPCBannerBuff[bannerType];
+ 
+ 		private void ItemCheck_MeleeHitNPCs(Item sItem, Rectangle itemRectangle, int originalDamage, float knockBack) {
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
  				if (!Main.npc[i].active || Main.npc[i].immune[whoAmI] != 0 || attackCD != 0)
  					continue;
  
@@ -4799,7 +4931,8 @@
  		private Rectangle ItemCheck_CatchCritters(Item sItem, Rectangle itemRectangle) {
 -			bool flag = sItem.type == 3183 || sItem.type == 4821;
 +			//bool flag = sItem.type == 3183 || sItem.type == 4821; // effectively replaced by ItemID.Sets.LavaproofCatchingTool
- 			for (int i = 0; i < 200; i++) {
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
  				if (!Main.npc[i].active || Main.npc[i].catchItem <= 0)
  					continue;
  
@@ -4980,6 +5113,24 @@
  				Vector2 vector4 = new Vector2(position.X + (float)width * 0.5f, position.Y + (float)height * 0.5f);
  				float num13 = (float)Main.mouseX + Main.screenPosition.X - vector4.X;
  				float num14 = (float)Main.mouseY + Main.screenPosition.Y - vector4.Y;
+@@ -32814,7 +_,7 @@
+ 		private bool GetSparkleGuitarTarget(out List<NPC> validTargets) {
+ 			validTargets = new List<NPC>();
+ 			Rectangle value = Utils.CenteredRectangle(base.Center, new Vector2(1000f, 800f));
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				NPC nPC = Main.npc[i];
+ 				if (nPC.CanBeChasedBy(this) && nPC.Hitbox.Intersects(value))
+ 					validTargets.Add(nPC);
+@@ -32830,7 +_,7 @@
+ 			npcTargetIndex = 0;
+ 			int? num = null;
+ 			float num2 = maxDistance;
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				NPC nPC = Main.npc[i];
+ 				if (nPC.CanBeChasedBy(this)) {
+ 					float num3 = searchCenter.Distance(nPC.Center);
 @@ -32914,7 +_,8 @@
  				}
  
@@ -5704,6 +5855,24 @@
  						AchievementsHelper.HandleMining();
  
  					if (Main.netMode == 1)
+@@ -37314,7 +_,7 @@
+ 
+ 		public bool isNearFairy() {
+ 			if (NPC.npcsFoundForCheckActive[583] || NPC.npcsFoundForCheckActive[584] || NPC.npcsFoundForCheckActive[585]) {
+-				for (int i = 0; i < 200; i++) {
++				for (int i = 0; i < Main.maxNPCs; i++) {
+ 					if (Main.npc[i].active && (Main.npc[i].type == 583 || Main.npc[i].type == 584 || Main.npc[i].type == 585) && Vector2.Distance(Main.npc[i].Center, base.Center) < (float)NPC.sWidth)
+ 						return true;
+ 				}
+@@ -37328,7 +_,7 @@
+ 				range = NPC.sWidth;
+ 
+ 			if (NPC.npcsFoundForCheckActive[type]) {
+-				for (int i = 0; i < 200; i++) {
++				for (int i = 0; i < Main.maxNPCs; i++) {
+ 					if (Main.npc[i].active && Main.npc[i].type == type && Vector2.Distance(Main.npc[i].Center, base.Center) < range)
+ 						return true;
+ 				}
 @@ -37356,7 +_,24 @@
  			if (Main.tileNoFail[tileTarget.type])
  				num = 100;
@@ -6433,6 +6602,15 @@
  			IEntitySource projectileSource_SetBonus = GetProjectileSource_SetBonus(3);
  			_ = Main.projectile[Projectile.NewProjectile(projectileSource_SetBonus, MinionRestTargetPoint, Vector2.Zero, 656, damage, 0f, Main.myPlayer)];
  		}
+@@ -39794,7 +_,7 @@
+ 		public void MinionNPCTargetAim(bool doNotDisableIfTheTargetIsTheSame) {
+ 			Vector2 mouseWorld = Main.MouseWorld;
+ 			int num = -1;
+-			for (int i = 0; i < 200; i++) {
++			for (int i = 0; i < Main.maxNPCs; i++) {
+ 				if (Main.npc[i].CanBeChasedBy(this) && (num == -1 || Main.npc[i].Hitbox.Distance(mouseWorld) < Main.npc[num].Hitbox.Distance(mouseWorld)))
+ 					num = i;
+ 			}
 @@ -39891,7 +_,7 @@
  				return;
  

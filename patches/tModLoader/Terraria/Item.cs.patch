@@ -903,6 +903,15 @@
  			if (type == 267) {
  				if (Main.netMode == 1)
  					return;
+@@ -45703,7 +_,7 @@
+ 				active = false;
+ 				type = 0;
+ 				stack = 0;
+-				for (int j = 0; j < 200; j++) {
++				for (int j = 0; j < Main.maxNPCs; j++) {
+ 					if (Main.npc[j].active && Main.npc[j].type == 22) {
+ 						if (Main.netMode == 2)
+ 							NetMessage.SendData(28, -1, -1, null, j, 9999f, 10f, -Main.npc[j].direction);
 @@ -45715,7 +_,9 @@
  
  				NetMessage.SendData(21, -1, -1, null, i);
@@ -930,6 +939,15 @@
  				base.velocity.Y += gravity;
  				if (base.velocity.Y > maxFallSpeed)
  					base.velocity.Y = maxFallSpeed;
+@@ -45837,7 +_,7 @@
+ 
+ 		private void GetPickedUpByMonsters(int i) {
+ 			Rectangle rectangle = new Rectangle((int)position.X, (int)position.Y, width, height);
+-			for (int j = 0; j < 200; j++) {
++			for (int j = 0; j < Main.maxNPCs; j++) {
+ 				if (!Main.npc[j].active || Main.npc[j].lifeMax <= 5 || Main.npc[j].friendly || Main.npc[j].immortal || Main.npc[j].dontTakeDamage || NPCID.Sets.CantTakeLunchMoney[Main.npc[j].type])
+ 					continue;
+ 
 @@ -45934,14 +_,25 @@
  					num2 *= 2;
  
