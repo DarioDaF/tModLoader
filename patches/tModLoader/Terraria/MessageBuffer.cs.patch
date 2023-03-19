@@ -189,6 +189,15 @@
  					if (Netplay.Connection.State == 3) {
  						Main.windSpeedCurrent = Main.windSpeedTarget;
  						Netplay.Connection.State = 4;
+@@ -735,7 +_,7 @@
+ 					}
+ 				}
+ 
+-				for (int num89 = 0; num89 < 200; num89++) {
++				for (int num89 = 0; num89 < Main.maxNPCs; num89++) {
+ 					if (Main.npc[num89].active)
+ 						NetMessage.TrySendData(23, whoAmI, -1, null, num89);
+ 				}
 @@ -921,8 +_,11 @@
  					Player player11 = Main.player[num139];
  					player11.statLife = reader.ReadInt16();
@@ -564,6 +573,24 @@
  					Main.tile[num237, num238].liquid = b15;
  					Main.tile[num237, num238].liquidType(liquidType);
  					if (Main.netMode == 2) {
+@@ -2188,7 +_,7 @@
+ 			}
+ 			case 56: {
+ 				int num27 = reader.ReadInt16();
+-				if (num27 >= 0 && num27 < 200) {
++				if (num27 >= 0 && num27 < Main.maxNPCs) {
+ 					if (Main.netMode == 1) {
+ 						string givenName = reader.ReadString();
+ 						Main.npc[num27].GivenName = givenName;
+@@ -2263,7 +_,7 @@
+ 				int num251 = reader.ReadInt16();
+ 				int num252 = reader.ReadInt16();
+ 				byte b16 = reader.ReadByte();
+-				if (num250 >= 200) {
++				if (num250 < 0 || num250 >= Main.maxNPCs) { // @FIX: Shouldn't check for < 0 too?
+ 					NetMessage.BootPlayer(whoAmI, NetworkText.FromKey("Net.CheatingInvalid"));
+ 					break;
+ 				}
 @@ -2304,7 +_,7 @@
  				if (Main.netMode != 2)
  					break;
@@ -573,6 +600,15 @@
  					if (!NPC.AnyNPCs(num216))
  						NPC.SpawnOnPlayer(num215, num216);
  				}
+@@ -2581,7 +_,7 @@
+ 					if (Main.netMode == 2)
+ 						who = whoAmI;
+ 
+-					if (num227 < 200 && num227 >= 0)
++					if (num227 < Main.maxNPCs && num227 >= 0)
+ 						NPC.CatchNPC(num227, who);
+ 				}
+ 				break;
 @@ -2708,7 +_,7 @@
  				if (Main.netMode == 1) {
  					int num103 = reader.ReadInt16();
@@ -631,6 +667,15 @@
  				if (num186 == 255) {
  					if (EmoteBubble.byID.ContainsKey(num185))
  						EmoteBubble.byID.Remove(num185);
+@@ -2871,7 +_,7 @@
+ 				int num173 = reader.ReadInt32();
+ 				float num174 = reader.ReadSingle();
+ 				float num175 = reader.ReadSingle();
+-				if (num172 >= 0 && num172 <= 200) {
++				if (num172 >= 0 && num172 < Main.maxNPCs) { // @FIX was <=
+ 					if (Main.netMode == 1) {
+ 						Main.npc[num172].moneyPing(new Vector2(num174, num175));
+ 						Main.npc[num172].extraValue = num173;
 @@ -3182,7 +_,16 @@
  				break;
  			case 117: {
@@ -699,6 +744,15 @@
  				}
  				break;
  			case 124: {
+@@ -3416,7 +_,7 @@
+ 				if (Main.netMode == 1) {
+ 					int num68 = reader.ReadUInt16();
+ 					NPC nPC = null;
+-					nPC = ((num68 >= 200) ? new NPC() : Main.npc[num68]);
++					nPC = ((num68 >= Main.maxNPCs) ? new NPC() : Main.npc[num68]);
+ 					int num69 = reader.ReadByte();
+ 					if (num69 == 1) {
+ 						int time = reader.ReadInt32();
 @@ -3431,20 +_,46 @@
  					ushort key = reader.ReadUInt16();
  					LegacySoundStyle legacySoundStyle = SoundID.SoundByIndex[key];
@@ -746,6 +800,15 @@
  				}
  				break;
  			case 134: {
+@@ -3491,7 +_,7 @@
+ 				if (Main.netMode == 2) {
+ 					int num28 = reader.ReadInt16();
+ 					int buffTypeToRemove = reader.ReadUInt16();
+-					if (num28 >= 0 && num28 < 200)
++					if (num28 >= 0 && num28 < Main.maxNPCs)
+ 						Main.npc[num28].RequestBuffRemoval(buffTypeToRemove);
+ 				}
+ 				break;
 @@ -3587,6 +_,27 @@
  
  				break;

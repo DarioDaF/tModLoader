@@ -1,0 +1,11 @@
+--- src/TerrariaNetCore/Terraria/Cinematics/DD2Film.cs
++++ src/tModLoader/Terraria/Cinematics/DD2Film.cs
+@@ -334,7 +_,7 @@
+ 		}
+ 
+ 		num2 = j * 16;
+-		int start = 100;
++		int start = Main.maxNPCs / 2; // @TODO: Should be %?
+ 		switch (type) {
+ 			case 20:
+ 				start = 1;

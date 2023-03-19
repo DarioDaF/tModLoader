@@ -89,7 +89,7 @@ public static class ProjectileLoader
 		Array.Resize(ref Projectile.perIDStaticNPCImmunity, nextProjectile);
 
 		for (int i = 0; i < nextProjectile; i++) {
-			Projectile.perIDStaticNPCImmunity[i] = new uint[200];
+			Projectile.perIDStaticNPCImmunity[i] = new uint[Main.maxNPCs];
 		}
 
 		foreach (var hook in hooks.Union(modHooks)) {
@@ -144,7 +144,7 @@ public static class ProjectileLoader
 			g.OnSpawn(projectile, source);
 		}
 	}
-	
+
 	//in Terraria.Projectile rename AI to VanillaAI then make AI call ProjectileLoader.ProjectileAI(this)
 	public static void ProjectileAI(Projectile projectile)
 	{

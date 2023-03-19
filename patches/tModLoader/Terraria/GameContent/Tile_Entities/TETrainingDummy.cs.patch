@@ -9,3 +9,12 @@
  {
  	private static Dictionary<int, Rectangle> playerBox = new Dictionary<int, Rectangle>();
  	private static bool playerBoxFilled;
+@@ -146,7 +_,7 @@
+ 
+ 	public void Activate()
+ 	{
+-		int num = NPC.NewNPC(new EntitySource_TileEntity(this), Position.X * 16 + 16, Position.Y * 16 + 48, 488, 100);
++		int num = NPC.NewNPC(new EntitySource_TileEntity(this), Position.X * 16 + 16, Position.Y * 16 + 48, 488, Main.maxNPCs / 2); // @TODO: should be %?
+ 		Main.npc[num].ai[0] = Position.X;
+ 		Main.npc[num].ai[1] = Position.Y;
+ 		Main.npc[num].netUpdate = true;

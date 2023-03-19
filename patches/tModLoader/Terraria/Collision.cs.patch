@@ -8,6 +8,15 @@
  
  namespace Terraria;
  
+@@ -967,7 +_,7 @@
+ 				return false;
+ 		}
+ 
+-		for (int l = 0; l < 200; l++) {
++		for (int l = 0; l < Main.maxNPCs; l++) {
+ 			if (Main.npc[l].active && rectangle.Intersects(new Rectangle((int)Main.npc[l].position.X, (int)Main.npc[l].position.Y, Main.npc[l].width, Main.npc[l].height)))
+ 				return false;
+ 		}
 @@ -1030,7 +_,7 @@
  		if (tile == null || !tile.active() || tile.inActive() || !Main.tileSolid[tile.type])
  			return false;

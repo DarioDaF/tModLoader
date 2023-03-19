@@ -1,0 +1,11 @@
+--- src/TerrariaNetCore/Terraria/GameContent/PortalHelper.cs
++++ src/tModLoader/Terraria/GameContent/PortalHelper.cs
+@@ -20,7 +_,7 @@
+ 	{
+ 		FoundPortals = new int[256, 2];
+ 		PortalCooldownForPlayers = new int[256];
+-		PortalCooldownForNPCs = new int[200];
++		PortalCooldownForNPCs = new int[Main.maxNPCs];
+ 		EDGES = new Vector2[4] {
+ 			new Vector2(0f, 1f),
+ 			new Vector2(0f, -1f),

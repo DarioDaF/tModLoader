@@ -36,7 +36,7 @@
  			if (_delayUntilNextAttempt == 0) {
  				_delayUntilNextAttempt = 60;
  				TrySpawningFairies();
-@@ -69,12 +_,17 @@
+@@ -69,13 +_,18 @@
  
  		int oneOverSpawnChance = GetOneOverSpawnChance();
  		bool flag = false;
@@ -50,8 +50,18 @@
  				break;
  			}
  		}
-+
-+		_timePass %= 1.0;
  
++		_timePass %= 1.0;
++
  		if (!flag)
  			return;
+ 
+@@ -107,7 +_,7 @@
+ 				num2 = 583;
+ 
+ 			int num3 = NPC.NewNPC(new EntitySource_WorldEvent(), (int)vector.X, (int)vector.Y, num2);
+-			if (Main.netMode == 2 && num3 < 200)
++			if (Main.netMode == 2 && num3 < Main.maxNPCs)
+ 				NetMessage.SendData(23, -1, -1, null, num3);
+ 		}
+ 

@@ -1,0 +1,11 @@
+--- src/TerrariaNetCore/Terraria/Cinematics/DSTFilm.cs
++++ src/tModLoader/Terraria/Cinematics/DSTFilm.cs
+@@ -109,7 +_,7 @@
+ 		if (type == 668)
+ 			y -= 240;
+ 
+-		int start = 100;
++		int start = Main.maxNPCs / 2; // @TODO: Should be %?
+ 		int num = NPC.NewNPC(new EntitySource_Film(), x, y, type, start);
+ 		return Main.npc[num];
+ 	}

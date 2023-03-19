@@ -118,7 +118,7 @@
  	{
  		float num = _data.jumpSpeed;
  		switch (_type) {
-@@ -2173,10 +_,13 @@
+@@ -2173,11 +_,14 @@
  				if (_frameState == 4)
  					num += 2.5f;
  				break;
@@ -127,11 +127,12 @@
  
  		if (_shouldSuperCart)
  			num = SuperCartJumpSpeed;
-+		
-+		MountLoader.JumpSpeed(player, _data, ref num, xVelocity);
  
++		MountLoader.JumpSpeed(player, _data, ref num, xVelocity);
++
  		return num;
  	}
+ 
 @@ -2503,7 +_,10 @@
  						Vector2 vector = mountedPlayer.Center + new Vector2(mountedPlayer.width * -mountedPlayer.direction, 26f);
  						Vector2 vector2 = new Vector2(0f, -4f).RotatedByRandom(0.10000000149011612);
@@ -183,6 +184,15 @@
  		if (_shouldSuperCart) {
  			CastSuperCartLaser(mountedPlayer);
  			float num = 1f + Math.Abs(mountedPlayer.velocity.X) / RunSpeed * 2.5f;
+@@ -3667,7 +_,7 @@
+ 				bool flag = false;
+ 				float num9 = 1500f;
+ 				float num10 = 850f;
+-				for (int i = 0; i < 200; i++) {
++				for (int i = 0; i < Main.maxNPCs; i++) {
+ 					NPC nPC = Main.npc[i];
+ 					if (!nPC.CanBeChasedBy(this))
+ 						continue;
 @@ -3747,10 +_,13 @@
  					else
  						Lighting.AddLight(mountedPlayer.Center + Vector2.UnitX * mountedPlayer.direction * 20f, vector9.X, vector9.Y, vector9.Z);
@@ -197,6 +207,15 @@
  				}
  				if (mountedPlayer.statLife <= mountedPlayer.statLifeMax2 / 2)
  					mountedPlayer.MountFishronSpecialCounter = 60f;
+@@ -3901,7 +_,7 @@
+ 		int damage = 60;
+ 		int num2 = 0;
+ 		float num3 = 0f;
+-		for (int i = 0; i < 200; i++) {
++		for (int i = 0; i < Main.maxNPCs; i++) {
+ 			NPC nPC = Main.npc[i];
+ 			if (nPC.active && nPC.immune[mountedPlayer.whoAmI] <= 0 && !nPC.dontTakeDamage && nPC.Distance(minecartMechPoint) < 300f && nPC.CanBeChasedBy(mountedPlayer) && Collision.CanHitLine(nPC.position, nPC.width, nPC.height, minecartMechPoint, 0, 0) && Math.Abs(MathHelper.WrapAngle(MathHelper.WrapAngle(nPC.AngleFrom(minecartMechPoint)) - MathHelper.WrapAngle((mountedPlayer.fullRotation + (float)num == -1f) ? ((float)Math.PI) : 0f))) < (float)Math.PI / 4f) {
+ 				minecartMechPoint = GetMinecartMechPoint(mountedPlayer, -20, -39);
 @@ -4009,6 +_,9 @@
  	public bool AimAbility(Player mountedPlayer, Vector2 mousePosition)
  	{
@@ -251,7 +270,7 @@
 +
 +			if (skipDust)
 +				goto PostDustSpawn;
-+			
++
  			DoSpawnDust(mountedPlayer, isDismounting: true);
 +			PostDustSpawn:
 +
@@ -276,7 +295,7 @@
 +
 +		if (skipDust)
 +			goto PostDustSpawn;
-+		
++
  		DoSpawnDust(mountedPlayer, isDismounting: false);
 +		PostDustSpawn:
 +
