@@ -342,13 +342,4 @@ internal partial class UIModBrowser : UIState, IHaveBackButtonCommand
 		Utils.ShowFancyErrorMessage($"{Language.GetTextValue("tModLoader.MBBrowserError")}\n\n{e.Message}\n{e.StackTrace}", 0);
 	}
 
-	internal void CleanupDeletedItem(string modName)
-	{
-		if (SocialBackend.Items.Count > 0) {
-			SocialBackend.FindDownloadItem(modName).Installed = null;
-			SocialBackend.FindDownloadItem(modName).NeedsGameRestart = true;
-			PopulateModBrowser(uiOnly: true);
-			UpdateNeeded = true;
-		}
-	}
 }
