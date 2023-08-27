@@ -1,0 +1,11 @@
+--- src/TerrariaNetCore/Terraria/GameInput/LockOnHelper.cs
++++ src/tModLoader/Terraria/GameInput/LockOnHelper.cs
+@@ -28,7 +_,7 @@
+ 	private static int _threeDSTarget = -1;
+ 	private static int _targetClosestTarget = -1;
+ 	public static bool ForceUsability = false;
+-	private static float[,] _drawProgress = new float[200, 2];
++	private static float[,] _drawProgress = new float[Main.maxNPCs, 2];
+ 
+ 	public static NPC AimedTarget {
+ 		get {

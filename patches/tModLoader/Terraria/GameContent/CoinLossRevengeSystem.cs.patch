@@ -1,0 +1,11 @@
+--- src/TerrariaNetCore/Terraria/GameContent/CoinLossRevengeSystem.cs
++++ src/tModLoader/Terraria/GameContent/CoinLossRevengeSystem.cs
+@@ -154,7 +_,7 @@
+ 			nPC.SpawnedFromStatue = _spawnedFromStatue;
+ 			float num2 = Math.Max(0.5f, _npcHPPercent);
+ 			nPC.life = (int)((float)nPC.lifeMax * num2);
+-			if (num < 200) {
++			if (num < Main.maxNPCs) {
+ 				if (Main.netMode == 0) {
+ 					nPC.moneyPing(_location);
+ 				}

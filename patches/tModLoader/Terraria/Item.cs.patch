@@ -1965,6 +1965,24 @@
  		if (Main.netMode == 2 && playerIndexTheItemIsReservedFor != Main.myPlayer) {
  			timeSinceTheItemHasBeenReservedForSomeone++;
  			if (timeSinceTheItemHasBeenReservedForSomeone >= 300) {
+@@ -48230,7 +_,7 @@
+ 			type = 0;
+ 			stack = 0;
+ 			bool flag = false;
+-			for (int j = 0; j < 200; j++) {
++			for (int j = 0; j < Main.maxNPCs; j++) {
+ 				if (Main.npc[j].active && Main.npc[j].type == 22) {
+ 					int num2 = -Main.npc[j].direction;
+ 					if (Main.npc[j].IsNPCValidForBestiaryKillCredit())
+@@ -48248,7 +_,7 @@
+ 
+ 			if (flag) {
+ 				List<int> list = new List<int>();
+-				for (int k = 0; k < 200; k++) {
++				for (int k = 0; k < Main.maxNPCs; k++) {
+ 					if (num <= 0)
+ 						break;
+ 
 @@ -48274,7 +_,7 @@
  
  			NetMessage.SendData(21, -1, -1, null, i);
@@ -1983,15 +2001,27 @@
  		if (!shimmered && ItemID.Sets.ItemNoGravity[type]) {
  			velocity.X *= 0.95f;
  			if ((double)velocity.X < 0.1 && (double)velocity.X > -0.1)
-@@ -48553,7 +_,7 @@
+@@ -48551,9 +_,9 @@
+ 
+ 		bool flag3 = false;
  		Rectangle hitbox = base.Hitbox;
- 		for (int j = 0; j < 200; j++) {
+-		for (int j = 0; j < 200; j++) {
++		for (int j = 0; j < Main.maxNPCs; j++) {
  			NPC nPC = Main.npc[j];
 -			if (nPC.active && flag && nPC.type >= 0 && nPC.type < NPCID.Count && NPCID.Sets.CanConvertIntoCopperSlimeTownNPC[nPC.type] && hitbox.Intersects(nPC.Hitbox)) {
 +			if (nPC.active && flag && nPC.type >= 0 && NPCID.Sets.CanConvertIntoCopperSlimeTownNPC[nPC.type] && hitbox.Intersects(nPC.Hitbox)) {
  				flag3 = true;
  				NPC.TransformCopperSlime(j);
  				break;
+@@ -48570,7 +_,7 @@
+ 	private void GetPickedUpByMonsters_Money(int i)
+ 	{
+ 		Rectangle rectangle = new Rectangle((int)position.X, (int)position.Y, width, height);
+-		for (int j = 0; j < 200; j++) {
++		for (int j = 0; j < Main.maxNPCs; j++) {
+ 			NPC nPC = Main.npc[j];
+ 			if (!nPC.active || nPC.lifeMax <= 5 || nPC.friendly || nPC.immortal || nPC.dontTakeDamage || NPCID.Sets.CantTakeLunchMoney[nPC.type])
+ 				continue;
 @@ -48669,14 +_,26 @@
  				num2 *= 2;
  
